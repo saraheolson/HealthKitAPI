@@ -129,6 +129,7 @@ extension InterfaceController: HKWorkoutSessionDelegate {
             print("Workout started.")
             if let query = healthKitManager.createHeartRateStreamingQuery(date) {
                 self.heartRateQuery = query
+                self.healthKitManager.heartRateDelegate = self
                 healthKitManager.healthStore.execute(query)
             }
         case .ended:
