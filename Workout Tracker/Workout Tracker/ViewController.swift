@@ -48,8 +48,7 @@ extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "heartRate", for: indexPath)
         let heartRate = datasource[indexPath.row].quantity
-        let heartRateFormattedString = String(format: "%.00f", heartRate)
-        cell.textLabel?.text = "\(heartRateFormattedString)"
+        cell.textLabel?.text = "\(heartRate)"
         return cell
     }
 }

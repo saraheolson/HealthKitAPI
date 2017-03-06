@@ -76,6 +76,10 @@ class InterfaceController: WKInterfaceController {
     }
     
     func startWorkoutSession() {
+        
+        if self.workoutSession != nil {
+            createWorkoutSession()
+        }
         guard let session = workoutSession else {
             print("Cannot start a workout without a session.")
             return
