@@ -23,6 +23,10 @@ class InterfaceController: WKInterfaceController {
     
     var workoutStartDate: Date?
     
+    var heartRateQuery: HKQuery?
+    
+    var heartRateSamples: [HKQuantitySample] = [HKQuantitySample]()
+    
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
                 
@@ -98,11 +102,18 @@ class InterfaceController: WKInterfaceController {
         let workout = HKWorkout(activityType: .other,
                                 start: startDate,
                                 end: Date())
-        healthKitManager.healthStore.save(workout) { (success, error) in
+        healthKitManager.healthStore.save(workout) { [weak self] (success, error) in
             if !success {
                 print("Could not successfully save workout.")
                 return
             }
+            guard let samples = self?.heartRateSamples else {
+                print("No data to save")
+                return
+            }
+            self?.healthKitManager.healthStore.add(samples, to: workout, completion: { (success, error) in
+                print("Successfully saved heart rate samples.")
+            })
         }
     }
 }
@@ -116,8 +127,15 @@ extension InterfaceController: HKWorkoutSessionDelegate {
         switch toState {
         case .running:
             print("Workout started.")
+            if let query = healthKitManager.createHeartRateStreamingQuery(date) {
+                self.heartRateQuery = query
+                healthKitManager.healthStore.execute(query)
+            }
         case .ended:
             print("Workout ended.")
+            if let query = self.heartRateQuery {
+                healthKitManager.healthStore.stop(query)
+            }
         default:
             print("Other workout state.")
         }
@@ -127,5 +145,24 @@ extension InterfaceController: HKWorkoutSessionDelegate {
                         didFailWithError error: Error) {
         print("Workout failed with error: \(error)")
         
+    }
+}
+
+extension InterfaceController: HeartRateDelegate {
+    
+    func heartRateUpdated(heartRateSamples: [HKSample]) {
+        
+        guard let heartRateSamples = heartRateSamples as? [HKQuantitySample] else {
+            return
+        }
+        DispatchQueue.main.async {
+            self.heartRateSamples = heartRateSamples
+            guard let sample = heartRateSamples.first else {
+                return
+            }
+            let value = sample.quantity.doubleValue(for: HKUnit(from: "count/min"))
+            let heartRateString = String(format: "%.00f", value)
+            self.heartRateLabel.setText(heartRateString)
+        }
     }
 }
