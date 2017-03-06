@@ -21,6 +21,8 @@
 		0C12B72A1E6D0C0D00F83F38 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0C12B7291E6D0C0D00F83F38 /* Assets.xcassets */; };
 		0C12B73C1E6D11FC00F83F38 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C12B73B1E6D11FC00F83F38 /* HealthKit.framework */; };
 		0C12B73F1E6D120200F83F38 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C12B73E1E6D120200F83F38 /* HealthKit.framework */; };
+		0C3C767D1E6D1ABA0057DA4F /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C3C767B1E6D18510057DA4F /* HealthKitManager.swift */; };
+		0C3C767F1E6D1B8C0057DA4F /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C3C767B1E6D18510057DA4F /* HealthKitManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -86,6 +88,7 @@
 		0C12B73B1E6D11FC00F83F38 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		0C12B73D1E6D120200F83F38 /* Workout Tracker WatchKit Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Workout Tracker WatchKit Extension.entitlements"; sourceTree = "<group>"; };
 		0C12B73E1E6D120200F83F38 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS3.1.sdk/System/Library/Frameworks/HealthKit.framework; sourceTree = DEVELOPER_DIR; };
+		0C3C767B1E6D18510057DA4F /* HealthKitManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HealthKitManager.swift; path = "../Workout Tracker/HealthKitManager.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +117,7 @@
 				0C12B7011E6D0C0D00F83F38 /* Workout Tracker */,
 				0C12B7151E6D0C0D00F83F38 /* Workout Tracker WatchKit App */,
 				0C12B7241E6D0C0D00F83F38 /* Workout Tracker WatchKit Extension */,
+				0C3C767E1E6D1B560057DA4F /* Shared */,
 				0C12B7001E6D0C0D00F83F38 /* Products */,
 				0C12B73A1E6D11FB00F83F38 /* Frameworks */,
 			);
@@ -172,6 +176,15 @@
 				0C12B73B1E6D11FC00F83F38 /* HealthKit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		0C3C767E1E6D1B560057DA4F /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				0C3C767B1E6D18510057DA4F /* HealthKitManager.swift */,
+			);
+			name = Shared;
+			path = "Workout Tracker WatchKit Extension";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -324,6 +337,7 @@
 			files = (
 				0C12B7051E6D0C0D00F83F38 /* ViewController.swift in Sources */,
 				0C12B7031E6D0C0D00F83F38 /* AppDelegate.swift in Sources */,
+				0C3C767F1E6D1B8C0057DA4F /* HealthKitManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -333,6 +347,7 @@
 			files = (
 				0C12B7281E6D0C0D00F83F38 /* ExtensionDelegate.swift in Sources */,
 				0C12B7261E6D0C0D00F83F38 /* InterfaceController.swift in Sources */,
+				0C3C767D1E6D1ABA0057DA4F /* HealthKitManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -589,6 +604,7 @@
 				0C12B7301E6D0C0D00F83F38 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		0C12B7321E6D0C0D00F83F38 /* Build configuration list for PBXNativeTarget "Workout Tracker WatchKit App" */ = {
 			isa = XCConfigurationList;
@@ -597,6 +613,7 @@
 				0C12B7341E6D0C0D00F83F38 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		0C12B7361E6D0C0D00F83F38 /* Build configuration list for PBXNativeTarget "Workout Tracker" */ = {
 			isa = XCConfigurationList;
@@ -605,6 +622,7 @@
 				0C12B7381E6D0C0D00F83F38 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
