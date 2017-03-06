@@ -21,6 +21,8 @@ class InterfaceController: WKInterfaceController {
     
     var isWorkoutInProgress = false
     
+    var workoutStartDate: Date?
+    
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
                 
@@ -75,6 +77,7 @@ class InterfaceController: WKInterfaceController {
             return
         }
         healthKitManager.healthStore.start(session)
+        workoutStartDate = Date()
     }
     
     func endWorkoutSession() {
@@ -83,6 +86,24 @@ class InterfaceController: WKInterfaceController {
             return
         }
         healthKitManager.healthStore.end(session)
+        saveWorkout()
+    }
+    
+    func saveWorkout() {
+        
+        guard let startDate = workoutStartDate else {
+            print("Workout had no start date")
+            return
+        }
+        let workout = HKWorkout(activityType: .other,
+                                start: startDate,
+                                end: Date())
+        healthKitManager.healthStore.save(workout) { (success, error) in
+            if !success {
+                print("Could not successfully save workout.")
+                return
+            }
+        }
     }
 }
 
