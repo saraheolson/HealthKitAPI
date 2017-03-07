@@ -22,6 +22,7 @@ class HealthKitManager : NSObject {
     let healthStore = HKHealthStore()
     
     var heartRateDelegate: HeartRateDelegate?
+    
     var anchor: HKQueryAnchor?
     
     func authorizeHealthKitAccess(_ completion: @escaping ((_ success: Bool, _ error: Error?) -> Void)) {

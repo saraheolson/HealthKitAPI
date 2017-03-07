@@ -62,10 +62,7 @@ extension ViewController: HeartRateDelegate {
         }
         
         DispatchQueue.main.async {
-            //self.datasource.append(contentsOf: heartRateSamples)
-            for sample in heartRateSamples {
-                self.datasource.append(sample)
-            }
+            self.datasource.append(contentsOf: heartRateSamples)
             self.tableView.reloadData()
         }
     }

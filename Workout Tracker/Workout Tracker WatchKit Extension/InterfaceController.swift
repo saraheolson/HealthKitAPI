@@ -29,10 +29,14 @@ class InterfaceController: WKInterfaceController {
     
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
-                
+        
+        self.workoutButton.setEnabled(false)
+        
         healthKitManager.authorizeHealthKitAccess { [weak self] (success, error) in
             print("HealthKit authorized? \(success)")
             self?.createWorkoutSession()
+
+            self?.workoutButton.setEnabled(true)
         }
     }
     
@@ -116,7 +120,9 @@ class InterfaceController: WKInterfaceController {
                 return
             }
             self?.healthKitManager.healthStore.add(samples, to: workout, completion: { (success, error) in
-                print("Successfully saved heart rate samples.")
+                if success {
+                    print("Successfully saved heart rate samples.")
+                }
             })
         }
     }
