@@ -8,10 +8,12 @@
 
 import UIKit
 import HealthKit
+import HealthKitUI
 
 class ViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var activitySummaryView: HKActivityRingView!
     
     let healthKitManager = HealthKitManager.sharedInstance
 
@@ -32,6 +34,13 @@ class ViewController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    @IBAction func viewSummary(_ sender: Any) {
+        if let query = healthKitManager.createActivitySummaryQuery() {
+            self.healthKitManager.activitySummaryDelegate = self
+            healthKitManager.healthStore.execute(query)
+        }
     }
 }
 
@@ -72,6 +81,42 @@ extension ViewController: HeartRateDelegate {
             self.heartRateQuery = query
             self.healthKitManager.heartRateDelegate = self
             self.healthKitManager.healthStore.execute(query)
+        }
+    }
+}
+
+extension ViewController: ActivitySummaryDelegate {
+    
+    func activitySummariesUpdated(activitySummaries: [HKActivitySummary]) {
+
+        guard let summary = activitySummaries.first else {
+            return
+        }
+        
+        let energyUnit   = HKUnit.jouleUnit(with: .kilo)
+        let standUnit    = HKUnit.count()
+        let exerciseUnit = HKUnit.second()
+        
+        let energy   = summary.activeEnergyBurned.doubleValue(for: energyUnit)
+        let stand    = summary.appleStandHours.doubleValue(for: standUnit)
+        let exercise = summary.appleExerciseTime.doubleValue(for: exerciseUnit)
+
+        let energyGoal   = summary.activeEnergyBurnedGoal.doubleValue(for: energyUnit)
+        let standGoal    = summary.appleStandHoursGoal.doubleValue(for: standUnit)
+        let exerciseGoal = summary.appleExerciseTimeGoal.doubleValue(for: exerciseUnit)
+        
+        let energyProgress   = energyGoal == 0 ? 0 : energy / energyGoal
+        let standProgress    = standGoal == 0 ? 0 : stand / standGoal
+        let exerciseProgress = exerciseGoal == 0 ? 0 : exercise / exerciseGoal
+
+        print("Energy progress: \(energyProgress)")
+        print("Stand progress: \(standProgress)")
+        print("Exercise progress: \(exerciseProgress)")
+        
+        DispatchQueue.main.async {
+            if let activityView = self.activitySummaryView {
+                activityView.setActivitySummary(summary, animated: true)
+            }
         }
     }
 }

@@ -26,6 +26,8 @@ class InterfaceController: WKInterfaceController {
     var heartRateQuery: HKQuery?
     
     var heartRateSamples: [HKQuantitySample] = [HKQuantitySample]()
+    var distanceSamples: [HKSample] = [HKSample]()
+    var energySamples: [HKSample] = [HKSample]()
     
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
@@ -115,13 +117,21 @@ class InterfaceController: WKInterfaceController {
                 print("Could not successfully save workout.")
                 return
             }
-            guard let samples = self?.heartRateSamples else {
-                print("No data to save")
-                return
-            }
-            self?.healthKitManager.healthStore.add(samples, to: workout, completion: { (success, error) in
+            
+            print("Number of heart rate samples: \(self?.heartRateSamples.count)")
+            print("Number of distance samples: \(self?.distanceSamples.count)")
+            print("Number of energy samples: \(self?.energySamples.count)")
+            
+            let allSamples: [HKSample] = [self?.heartRateSamples, self?.energySamples, self?.distanceSamples].reduce([], { (result: [HKSample], element: [HKSample]?) -> [HKSample] in
+                return result + element!
+            })
+            
+            print("All Samples: \(allSamples)")
+            print("Total samples: \(allSamples.count)")
+            
+            self?.healthKitManager.healthStore.add(allSamples, to: workout, completion: { (success, error) in
                 if success {
-                    print("Successfully saved heart rate samples.")
+                    print("Successfully saved samples.")
                 }
             })
         }
@@ -141,6 +151,16 @@ extension InterfaceController: HKWorkoutSessionDelegate {
                 self.heartRateQuery = query
                 self.healthKitManager.heartRateDelegate = self
                 healthKitManager.healthStore.execute(query)
+            }
+            
+            if let distanceQuery = healthKitManager.createDistanceQuery(date) {
+                self.healthKitManager.distanceDelegate = self
+                healthKitManager.healthStore.execute(distanceQuery)
+            }
+            
+            if let energyQuery = healthKitManager.createEnergyBurnedQuery(date) {
+                self.healthKitManager.energyDelegate = self
+                healthKitManager.healthStore.execute(energyQuery)
             }
         case .ended:
             print("Workout ended.")
@@ -174,6 +194,26 @@ extension InterfaceController: HeartRateDelegate {
             let value = sample.quantity.doubleValue(for: HKUnit(from: "count/min"))
             let heartRateString = String(format: "%.00f", value)
             self.heartRateLabel.setText(heartRateString)
+        }
+    }
+}
+
+extension InterfaceController: EnergyDelegate {
+    
+    func energyUpdated(energy: [HKSample]) {
+        
+        DispatchQueue.main.async {
+            self.energySamples.append(contentsOf: energy)
+        }
+    }
+}
+
+extension InterfaceController: DistanceDelegate {
+    
+    func distanceUpdated(distance: [HKSample]) {
+        
+        DispatchQueue.main.async {
+            self.distanceSamples.append(contentsOf: distance)
         }
     }
 }
